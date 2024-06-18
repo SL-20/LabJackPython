@@ -56,7 +56,10 @@ class DacSinGenerator(object):
 
         """
         self.count = 0  # DAC update count
-        self.dacAddress = 5000  # DAC Modbus address
+        self.dacAddress0 = 5000  # DAC Modbus address
+
+        self.dacAddress1 = 5002 # DAC1 Modbus address
+
         self.setDacCount = 0  # DAC update count used. Based on time.
         self.updateInterval = float(updateInterval)
         self.runTime = float(runTime)
@@ -76,8 +79,9 @@ class DacSinGenerator(object):
         value = (self.setDacCount * self.step) * self.degToRad
 
         # Set DAC voltage
-        d.writeRegister(self.dacAddress, 2.5+2*math.sin(value))
+        d.writeRegister(self.dacAddress0, 2.5+1000*math.sin(value))
 
+        d.writeRegister(self.dacAddress1, 2.5+2*math.sin(value))
         # Increment DAC update count
         self.count += 1
 
@@ -125,9 +129,9 @@ if __name__ == "__main__":
         exit()
 
     # Create sine wave generator
-    updateInterval = 0.005  # In seconds
-    frequency = 10  # In Hz
-    runTime = 10  # In seconds
+    updateInterval = 0.00005  # In seconds
+    frequency = 80 # In Hz
+    runTime = 5  # In seconds
     sinGen = DacSinGenerator(d, frequency, updateInterval, runTime)
 
     print("This program will attempt to generate a sine wave with a frequency" \
